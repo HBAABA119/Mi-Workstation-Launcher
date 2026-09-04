@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="utf-8"?>
+<shortcuts xmlns:android="http://schemas.android.com/apk/res/android">
+    <shortcut
+        android:shortcutId="workstation_toggle"
+        android:enabled="true"
+        android:icon="@drawable/ic_workstation_tile"
+        android:shortcutShortLabel="@string/tile_label"
+        android:shortcutLongLabel="@string/tile_description">
+        <intent
+            android:action="android.intent.action.MAIN"
+            android:targetPackage="com.xiaomi.workstation"
+            android:targetClass="com.xiaomi.workstation.ui.LauncherActivity" />
+    </shortcut>
+</shortcuts>

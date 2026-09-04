@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <dimen name="widget_corner_radius">20dp</dimen>
+    <dimen name="glass_corner_radius">24dp</dimen>
+    <dimen name="dock_corner_radius">28dp</dimen>
+    <dimen name="app_icon_size">56dp</dimen>
+    <dimen name="app_icon_corner">16dp</dimen>
+    <dimen name="dock_icon_size">48dp</dimen>
+    <dimen name="dock_icon_corner">14dp</dimen>
+    <dimen name="widget_padding">20dp</dimen>
+    <dimen name="grid_spacing">8dp</dimen>
+    <dimen name="search_bar_height">48dp</dimen>
+</resources>

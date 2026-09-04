@@ -1,0 +1,146 @@
+name: Build & Release APK
+
+on:
+  push:
+    branches: [ main, master ]
+    tags: [ 'v*' ]
+  pull_request:
+    branches: [ main, master ]
+  workflow_dispatch:
+    inputs:
+      version_name:
+        description: 'Version name (e.g. 1.0.0)'
+        required: false
+        default: ''
+      release_notes:
+        description: 'Release notes'
+        required: false
+        default: ''
+
+env:
+  VERSION_NAME: ${{ github.event.inputs.version_name || github.ref_name }}
+  VERSION_CODE: ${{ github.run_number }}
+
+jobs:
+  build:
+    name: Build APK
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Set up JDK 17
+        uses: actions/setup-java@v4
+        with:
+          java-version: '17'
+          distribution: 'temurin'
+          cache: gradle
+
+      - name: Setup Gradle
+        uses: gradle/actions/setup-gradle@v3
+
+      - name: Grant execute permission for gradlew
+        run: chmod +x gradlew
+
+      - name: Determine version
+        id: version
+        run: |
+          if [[ "${{ github.ref }}" == refs/tags/v* ]]; then
+            echo "VERSION_NAME=${{ github.ref_name }}" >> $GITHUB_OUTPUT
+          elif [[ -n "${{ github.event.inputs.version_name }}" ]]; then
+            echo "VERSION_NAME=${{ github.event.inputs.version_name }}" >> $GITHUB_OUTPUT
+          else
+            echo "VERSION_NAME=dev-${{ github.run_number }}" >> $GITHUB_OUTPUT
+          fi
+          echo "VERSION_CODE=${{ github.run_number }}" >> $GITHUB_OUTPUT
+
+      - name: Build debug APK
+        run: ./gradlew assembleDebug
+
+      - name: Build release APK
+        run: ./gradlew assembleRelease
+
+      - name: Get release notes
+        id: notes
+        run: |
+          if [[ -n "${{ github.event.inputs.release_notes }}" ]]; then
+            echo "NOTES<<EOF" >> $GITHUB_OUTPUT
+            echo "${{ github.event.inputs.release_notes }}" >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          elif [[ -f CHANGELOG.md ]]; then
+            echo "NOTES<<EOF" >> $GITHUB_OUTPUT
+            head -n 20 CHANGELOG.md >> $GITHUB_OUTPUT
+            echo "EOF" >> $GITHUB_OUTPUT
+          else
+            echo "NOTES=Build ${{ github.run_number }}" >> $GITHUB_OUTPUT
+          fi
+
+      - name: Upload debug APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mi-Workstation-debug-${{ steps.version.outputs.VERSION_NAME }}
+          path: app/build/outputs/apk/debug/*.apk
+          retention-days: 7
+
+      - name: Upload release APK
+        uses: actions/upload-artifact@v4
+        with:
+          name: Mi-Workstation-release-${{ steps.version.outputs.VERSION_NAME }}
+          path: app/build/outputs/apk/release/*.apk
+          retention-days: 90
+
+      - name: Create GitHub Release
+        if: startsWith(github.ref, 'refs/tags/v')
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: ${{ github.ref_name }}
+          name: "Mi Workstation ${{ steps.version.outputs.VERSION_NAME }}"
+          body: |
+            ## What's New
+            ${{ steps.notes.outputs.NOTES }}
+            
+            ## Installation
+            1. Download the APK below
+            2. Enable "Install from unknown sources" if prompted
+            3. Open the APK to install
+            4. Set as default launcher when prompted
+            
+            ## Quick Settings
+            After installing, add the "Workstation" tile to your Quick Settings panel to easily toggle between launchers.
+          files: |
+            app/build/outputs/apk/release/*.apk
+            app/build/outputs/apk/debug/*.apk
+          draft: false
+          prerelease: false
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Create Development Release
+        if: github.ref == 'refs/heads/main' || github.ref == 'refs/heads/master'
+        uses: softprops/action-gh-release@v1
+        with:
+          tag_name: dev-build-${{ github.run_number }}
+          name: "Mi Workstation Dev Build #${{ github.run_number }}"
+          body: |
+            ## Development Build
+            This is an automatic development build from the `main` branch.
+            
+            **Version:** ${{ steps.version.outputs.VERSION_NAME }}
+            **Build:** ${{ github.run_number }}
+            
+            ## What's Changed
+            ${{ steps.notes.outputs.NOTES }}
+            
+            ## Installation
+            1. Download the debug APK below
+            2. Enable "Install from unknown sources" if prompted
+            3. Open the APK to install
+          files: |
+            app/build/outputs/apk/debug/*.apk
+          draft: false
+          prerelease: true
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

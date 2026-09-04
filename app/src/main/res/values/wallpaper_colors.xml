@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <color name="wallpaper_primary">#0D1B2A</color>
+    <color name="wallpaper_secondary">#1B4965</color>
+    <color name="wallpaper_accent">#4FC3F7</color>
+</resources>

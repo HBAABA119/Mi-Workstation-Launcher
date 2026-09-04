@@ -1,0 +1,2 @@
+-keep class com.xiaomi.workstation.** { *; }
+-dontwarn com.xiaomi.workstation.**

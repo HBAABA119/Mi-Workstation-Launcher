@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="utf-8"?>
+<vector xmlns:android="http://schemas.android.com/apk/res/android"
+    android:width="108dp"
+    android:height="108dp"
+    android:viewportWidth="108"
+    android:viewportHeight="108">
+    <!-- Background circle -->
+    <path
+        android:fillColor="#0D1B2A"
+        android:pathData="M54,54m-40,0a40,40 0,1 1,80 0a40,40 0,1 1,-80 0" />
+    <!-- Monitor shape -->
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M30,32h48c2.2,0 4,1.8 4,4v28c0,2.2 -1.8,4 -4,4H30c-2.2,0 -4,-1.8 -4,-4V36C26,33.8 27.8,32 30,32z" />
+    <!-- Screen content - grid -->
+    <path
+        android:fillColor="#0D1B2A"
+        android:pathData="M30,38h48v26H30z" />
+    <!-- Grid dots -->
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M34,42h6v6h-6z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M44,42h6v6h-6z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M54,42h6v6h-6z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M64,42h6v6h-6z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M34,52h6v6h-6z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M44,52h6v6h-6z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M54,52h6v6h-6z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M64,52h6v6h-6z" />
+    <!-- Monitor stand -->
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M46,68h16v4H46z" />
+    <path
+        android:fillColor="#4FC3F7"
+        android:pathData="M42,72h24v2H42z" />
+</vector>
