@@ -25,12 +25,12 @@ private val MiWorkstationColorScheme = darkColorScheme(
     onTertiaryContainer = TextPrimary,
     background = DeepNavy,
     onBackground = TextPrimary,
-    surface = DarkNavy,
+    surface = DeepNavyDark,
     onSurface = TextPrimary,
-    surfaceVariant = GlassWhite12,
+    surfaceVariant = GlassSurface,
     onSurfaceVariant = TextSecondary,
     outline = GlassBorder,
-    outlineVariant = GlassWhite8,
+    outlineVariant = GlassSurfaceLight,
     error = ErrorRed,
     onError = Color.White
 )

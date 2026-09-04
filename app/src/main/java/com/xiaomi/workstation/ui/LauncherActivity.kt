@@ -168,7 +168,7 @@ class LauncherActivity : ComponentActivity() {
             try {
                 val wallpaperManager = WallpaperManager.getInstance(context)
                 val drawable = wallpaperManager.drawable
-                drawableToBitmap(drawable)
+                drawable?.let { drawableToBitmap(it) }
             } catch (e: Exception) {
                 null
             }
