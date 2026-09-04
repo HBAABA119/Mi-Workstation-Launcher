@@ -2,6 +2,23 @@
 
 All notable changes to Mi Workstation Launcher will be documented in this file.
 
+## [Unreleased] - dev build
+
+### Added
+- Real liquid glass effect via Haze blur (dev.chrisbanes.haze) - backdrop blur with 24-32dp radius
+- Draggable app icons - long-press to drag and scale, visual feedback
+- AndroidLiquidGlass reference folder (backdrop module from Kyant0)
+
+### Changed
+- Removed all emojis from category tabs and UI
+- Glass panels now use true backdrop blur (hazeSource + hazeEffect) instead of static gradients
+- Wallpaper now acts as haze source for authentic liquid glass refraction
+
+### Fixed
+- App drawer scrolling - fixed LazyVerticalGrid layout and nested scroll handling
+- App grid now properly scrollable with draggable items
+- Icon scaling and shadow depth improved
+
 ## [1.1.0] - 2026-09-04
 
 ### Fixed
@@ -43,14 +60,3 @@ All notable changes to Mi Workstation Launcher will be documented in this file.
 - Responsive layout for phones and tablets
 - Wallpaper integration
 - Boot receiver for launcher state persistence
-
-## [Unreleased]
-
-### Planned
-- Customizable icon packs
-- Gesture controls
-- More widget options (Battery, Music Player)
-- Folder support in app grid
-- Landscape mode optimizations
-- App hiding feature
-- Custom dock app selection

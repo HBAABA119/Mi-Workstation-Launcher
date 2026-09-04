@@ -35,117 +35,33 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xiaomi.workstation.ui.theme.AccentBlue
 import com.xiaomi.workstation.ui.theme.MediaGradientEnd
-import com.xiaomi.workstation.ui.theme.MediaGradientStart
 import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
+import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun MediaWidget(modifier: Modifier = Modifier) {
+fun MediaWidget(modifier: Modifier = Modifier, hazeState: HazeState? = null) {
     var isPlaying by remember { mutableStateOf(false) }
     var progress by remember { mutableFloatStateOf(0.35f) }
-
-    WidgetCard(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Filled.MusicNote,
-                    contentDescription = null,
-                    tint = MediaGradientEnd,
-                    modifier = Modifier.size(20.dp)
-                )
+    WidgetGlass(modifier = modifier, hazeState = hazeState) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(imageVector = Icons.Filled.MusicNote, contentDescription = null, tint = MediaGradientEnd, modifier = Modifier.size(20.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Now Playing",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Medium,
-                    color = TextSecondary
-                )
+                Text(text = "Now Playing", fontSize = 12.sp, fontWeight = FontWeight.Medium, color = TextSecondary)
             }
-
             Spacer(modifier = Modifier.height(12.dp))
-
-            Text(
-                text = "Xiaomi HyperOS 4",
-                fontSize = 16.sp,
-                fontWeight = FontWeight.Medium,
-                color = TextPrimary,
-                maxLines = 1,
-                overflow = TextOverflow.Ellipsis
-            )
-            Text(
-                text = "Evolved Experience",
-                fontSize = 12.sp,
-                fontWeight = FontWeight.Normal,
-                color = TextSecondary
-            )
-
+            Text(text = "Xiaomi HyperOS 4", fontSize = 16.sp, fontWeight = FontWeight.Medium, color = TextPrimary, maxLines = 1, overflow = TextOverflow.Ellipsis)
+            Text(text = "Evolved Experience", fontSize = 12.sp, fontWeight = FontWeight.Normal, color = TextSecondary)
             Spacer(modifier = Modifier.height(12.dp))
-
-            LinearProgressIndicator(
-                progress = { progress },
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(3.dp)
-                    .clip(androidx.compose.foundation.shape.RoundedCornerShape(2.dp)),
-                color = AccentBlue,
-                trackColor = TextSecondary.copy(alpha = 0.2f)
-            )
-
+            LinearProgressIndicator(progress = { progress }, modifier = Modifier.fillMaxWidth().height(3.dp).clip(androidx.compose.foundation.shape.RoundedCornerShape(2.dp)), color = AccentBlue, trackColor = TextSecondary.copy(alpha = 0.2f))
             Spacer(modifier = Modifier.height(8.dp))
-
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.Center,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                IconButton(
-                    onClick = { },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = TextSecondary
-                    )
-                ) {
-                    Icon(
-                        Icons.Filled.SkipPrevious,
-                        contentDescription = "Previous",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
-
+            Row(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center, verticalAlignment = Alignment.CenterVertically) {
+                IconButton(onClick = { }, colors = IconButtonDefaults.iconButtonColors(contentColor = TextSecondary)) { Icon(Icons.Filled.SkipPrevious, contentDescription = "Previous", modifier = Modifier.size(24.dp)) }
                 Spacer(modifier = Modifier.width(16.dp))
-
-                IconButton(
-                    onClick = { isPlaying = !isPlaying },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = TextPrimary
-                    )
-                ) {
-                    Icon(
-                        if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow,
-                        contentDescription = if (isPlaying) "Pause" else "Play",
-                        modifier = Modifier.size(32.dp)
-                    )
-                }
-
+                IconButton(onClick = { isPlaying = !isPlaying }, colors = IconButtonDefaults.iconButtonColors(contentColor = TextPrimary)) { Icon(if (isPlaying) Icons.Filled.Pause else Icons.Filled.PlayArrow, contentDescription = if (isPlaying) "Pause" else "Play", modifier = Modifier.size(32.dp)) }
                 Spacer(modifier = Modifier.width(16.dp))
-
-                IconButton(
-                    onClick = { },
-                    colors = IconButtonDefaults.iconButtonColors(
-                        contentColor = TextSecondary
-                    )
-                ) {
-                    Icon(
-                        Icons.Filled.SkipNext,
-                        contentDescription = "Next",
-                        modifier = Modifier.size(24.dp)
-                    )
-                }
+                IconButton(onClick = { }, colors = IconButtonDefaults.iconButtonColors(contentColor = TextSecondary)) { Icon(Icons.Filled.SkipNext, contentDescription = "Next", modifier = Modifier.size(24.dp)) }
             }
         }
     }

@@ -20,15 +20,15 @@ data class AppInfo(
     }
 }
 
-enum class AppCategory(val displayName: String, val icon: String) {
-    SOCIAL("Social", "\uD83D\uDCAC"),
-    PRODUCTIVITY("Work", "\uD83D\uDCC5"),
-    MEDIA("Media", "\uD83C\uDFA5"),
-    SYSTEM("System", "\u2699\uFE0F"),
-    GAMES("Games", "\uD83C\uDFAE"),
-    SHOPPING("Shopping", "\uD83D\uDED2"),
-    UTILITIES("Tools", "\uD83D\uDD27"),
-    OTHER("Other", "\u2B50");
+enum class AppCategory(val displayName: String) {
+    SOCIAL("Social"),
+    PRODUCTIVITY("Work"),
+    MEDIA("Media"),
+    SYSTEM("System"),
+    GAMES("Games"),
+    SHOPPING("Shopping"),
+    UTILITIES("Tools"),
+    OTHER("Other");
 
     companion object {
         fun categorize(packageName: String): AppCategory {

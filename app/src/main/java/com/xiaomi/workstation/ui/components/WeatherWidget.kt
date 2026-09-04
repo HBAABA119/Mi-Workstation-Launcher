@@ -1,6 +1,5 @@
 package com.xiaomi.workstation.ui.components
 
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -22,70 +21,25 @@ import androidx.compose.ui.unit.sp
 import com.xiaomi.workstation.ui.theme.AccentBlue
 import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
+import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun WeatherWidget(modifier: Modifier = Modifier) {
-    WidgetCard(modifier = modifier) {
-        Column(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(16.dp)
-        ) {
-            // Weather icon and condition
-            Row(
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                Icon(
-                    imageVector = Icons.Outlined.Cloud,
-                    contentDescription = "Weather",
-                    tint = AccentBlue,
-                    modifier = Modifier.size(24.dp)
-                )
+fun WeatherWidget(modifier: Modifier = Modifier, hazeState: HazeState? = null) {
+    WidgetGlass(modifier = modifier, hazeState = hazeState) {
+        Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
+            Row(verticalAlignment = Alignment.CenterVertically) {
+                Icon(imageVector = Icons.Outlined.Cloud, contentDescription = null, tint = AccentBlue, modifier = Modifier.size(24.dp))
                 Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "Cloudy",
-                    fontSize = 12.sp,
-                    fontWeight = FontWeight.Normal,
-                    color = TextSecondary
-                )
+                Text(text = "Cloudy", fontSize = 12.sp, fontWeight = FontWeight.Normal, color = TextSecondary)
             }
-
             Spacer(modifier = Modifier.height(8.dp))
-
-            // Temperature
-            Row(
-                verticalAlignment = Alignment.Bottom
-            ) {
-                Text(
-                    text = "24",
-                    fontSize = 40.sp,
-                    fontWeight = FontWeight.Thin,
-                    color = TextPrimary,
-                    letterSpacing = (-1).sp
-                )
-                Text(
-                    text = "°",
-                    fontSize = 24.sp,
-                    fontWeight = FontWeight.Thin,
-                    color = TextSecondary
-                )
+            Row(verticalAlignment = Alignment.Bottom) {
+                Text(text = "24", fontSize = 40.sp, fontWeight = FontWeight.Thin, color = TextPrimary, letterSpacing = (-1).sp)
+                Text(text = "°", fontSize = 24.sp, fontWeight = FontWeight.Thin, color = TextSecondary)
             }
-
             Spacer(modifier = Modifier.height(4.dp))
-
-            // High/Low and location
-            Text(
-                text = "28° / 20°",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Normal,
-                color = TextSecondary
-            )
-            Text(
-                text = "Beijing",
-                fontSize = 11.sp,
-                fontWeight = FontWeight.Normal,
-                color = TextSecondary
-            )
+            Text(text = "28° / 20°", fontSize = 11.sp, fontWeight = FontWeight.Normal, color = TextSecondary)
+            Text(text = "Beijing", fontSize = 11.sp, fontWeight = FontWeight.Normal, color = TextSecondary)
         }
     }
 }

@@ -1,7 +1,5 @@
 package com.xiaomi.workstation.ui.components
 
-import androidx.compose.foundation.background
-import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,9 +21,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
-import androidx.compose.ui.graphics.Brush
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.SolidColor
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontWeight
@@ -33,77 +28,27 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xiaomi.workstation.ui.theme.TextSecondary
 import com.xiaomi.workstation.ui.theme.TextTertiary
+import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun SearchBar(
-    modifier: Modifier = Modifier,
-    onSearch: (String) -> Unit = {},
-    onQueryChange: (String) -> Unit = {}
-) {
+fun SearchBar(modifier: Modifier = Modifier, hazeState: HazeState? = null, onQueryChange: (String) -> Unit = {}) {
     var query by remember { mutableStateOf("") }
-    val shape = RoundedCornerShape(24.dp)
-
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(44.dp)
-            .shadow(
-                elevation = 4.dp,
-                shape = shape,
-                ambientColor = Color.Black.copy(alpha = 0.2f),
-                spotColor = Color.Black.copy(alpha = 0.1f)
-            )
-            .clip(shape)
-            .background(
-                brush = Brush.verticalGradient(
-                    colors = listOf(
-                        Color(0x33FFFFFF),
-                        Color(0x1AFFFFFF)
-                    )
-                )
-            )
-            .border(
-                width = 0.5.dp,
-                color = Color(0x33FFFFFF),
-                shape = shape
-            )
-            .padding(horizontal = 16.dp),
-        verticalAlignment = Alignment.CenterVertically
-    ) {
-        Icon(
-            imageVector = Icons.Filled.Search,
-            contentDescription = "Search",
-            tint = TextSecondary,
-            modifier = Modifier.size(18.dp)
-        )
-
-        Spacer(modifier = Modifier.width(12.dp))
-
-        BasicTextField(
-            value = query,
-            onValueChange = {
-                query = it
-                onQueryChange(it)
-            },
-            modifier = Modifier.weight(1f),
-            textStyle = TextStyle(
-                fontSize = 13.sp,
-                fontWeight = FontWeight.Normal,
-                color = TextSecondary
-            ),
-            singleLine = true,
-            cursorBrush = SolidColor(TextSecondary),
-            decorationBox = { innerTextField ->
-                if (query.isEmpty()) {
-                    Text(
-                        text = "Search apps, contacts, settings...",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = TextTertiary
-                    )
+    LiquidGlass(modifier = modifier.fillMaxWidth().height(44.dp), hazeState = hazeState, cornerRadius = 24.dp) {
+        Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.CenterVertically) {
+            Icon(imageVector = Icons.Filled.Search, contentDescription = null, tint = TextSecondary, modifier = Modifier.size(18.dp))
+            Spacer(modifier = Modifier.width(12.dp))
+            BasicTextField(
+                value = query,
+                onValueChange = { query = it; onQueryChange(it) },
+                modifier = Modifier.weight(1f),
+                textStyle = TextStyle(fontSize = 13.sp, fontWeight = FontWeight.Normal, color = TextSecondary),
+                singleLine = true,
+                cursorBrush = SolidColor(TextSecondary),
+                decorationBox = { inner ->
+                    if (query.isEmpty()) Text(text = "Search apps, contacts, settings...", fontSize = 13.sp, fontWeight = FontWeight.Normal, color = TextTertiary)
+                    inner()
                 }
-                innerTextField()
-            }
-        )
+            )
+        }
     }
 }

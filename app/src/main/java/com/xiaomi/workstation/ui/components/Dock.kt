@@ -29,11 +29,10 @@ import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.unit.sp
 import androidx.core.graphics.drawable.toBitmap
 import com.xiaomi.workstation.data.AppInfo
+import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun Dock(
@@ -42,171 +41,60 @@ fun Dock(
     onAppClick: (AppInfo) -> Unit,
     onDrawerClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    hazeState: HazeState? = null
 ) {
-    DockPanel(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 16.dp, vertical = 8.dp)
-    ) {
+    DockGlass(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), hazeState = hazeState) {
         Row(
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(horizontal = 12.dp, vertical = 10.dp),
+            modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,
             verticalAlignment = Alignment.CenterVertically
         ) {
-            // Pinned dock apps
-            dockApps.take(5).forEach { app ->
-                DockAppItem(
-                    app = app,
-                    onClick = { onAppClick(app) }
-                )
-            }
-
-            // Divider
+            dockApps.take(5).forEach { app -> DockAppItem(app = app, onClick = { onAppClick(app) }) }
             if (dockApps.isNotEmpty() && recentApps.isNotEmpty()) {
-                Box(
-                    modifier = Modifier
-                        .width(1.dp)
-                        .height(36.dp)
-                        .background(Color(0x33FFFFFF))
-                )
+                Box(modifier = Modifier.width(1.dp).height(36.dp).background(Color(0x33FFFFFF)))
                 Spacer(modifier = Modifier.width(8.dp))
             }
-
-            // Recent apps
-            recentApps.take(3).forEach { app ->
-                DockAppItem(
-                    app = app,
-                    onClick = { onAppClick(app) }
-                )
-            }
-
-            // Drawer button
-            DockIconButton(
-                icon = Icons.Filled.Apps,
-                label = "Apps",
-                onClick = onDrawerClick
-            )
-
-            // Settings button
-            DockIconButton(
-                icon = Icons.Filled.Settings,
-                label = "Settings",
-                onClick = onSettingsClick
-            )
+            recentApps.take(3).forEach { app -> DockAppItem(app = app, onClick = { onAppClick(app) }) }
+            DockIconButton(icon = Icons.Filled.Apps, onClick = onDrawerClick)
+            DockIconButton(icon = Icons.Filled.Settings, onClick = onSettingsClick)
         }
     }
 }
 
 @Composable
-private fun DockAppItem(
-    app: AppInfo,
-    onClick: () -> Unit
-) {
+private fun DockAppItem(app: AppInfo, onClick: () -> Unit) {
     val iconShape = RoundedCornerShape(14.dp)
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick
-            )
-            .padding(4.dp)
+        modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClick).padding(4.dp)
     ) {
         Box(
-            modifier = Modifier
-                .size(44.dp)
-                .shadow(
-                    elevation = 4.dp,
-                    shape = iconShape,
-                    ambientColor = Color.Black.copy(alpha = 0.3f),
-                    spotColor = Color.Black.copy(alpha = 0.2f)
-                )
-                .clip(iconShape)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0x33FFFFFF),
-                            Color(0x1AFFFFFF)
-                        )
-                    )
-                )
-                .border(
-                    width = 0.5.dp,
-                    color = Color(0x33FFFFFF),
-                    shape = iconShape
-                ),
+            modifier = Modifier.size(44.dp).shadow(4.dp, iconShape, ambientColor = Color.Black.copy(0.3f), spotColor = Color.Black.copy(0.2f))
+                .clip(iconShape).background(Brush.verticalGradient(listOf(Color(0x33FFFFFF), Color(0x1AFFFFFF)))).border(0.5.dp, Color(0x33FFFFFF), iconShape),
             contentAlignment = Alignment.Center
         ) {
             app.icon?.let { drawable ->
-                val bitmap = remember(drawable) {
-                    drawable.toBitmap(96, 96).asImageBitmap()
-                }
-                Image(
-                    bitmap = bitmap,
-                    contentDescription = app.label,
-                    modifier = Modifier.size(32.dp)
-                )
+                val bitmap = remember(drawable) { drawable.toBitmap(96, 96).asImageBitmap() }
+                Image(bitmap = bitmap, contentDescription = app.label, modifier = Modifier.size(32.dp))
             }
         }
     }
 }
 
 @Composable
-private fun DockIconButton(
-    icon: androidx.compose.ui.graphics.vector.ImageVector,
-    label: String,
-    onClick: () -> Unit
-) {
+private fun DockIconButton(icon: androidx.compose.ui.graphics.vector.ImageVector, onClick: () -> Unit) {
     val iconShape = RoundedCornerShape(14.dp)
-
     Column(
         horizontalAlignment = Alignment.CenterHorizontally,
-        modifier = Modifier
-            .clip(RoundedCornerShape(12.dp))
-            .clickable(
-                interactionSource = remember { MutableInteractionSource() },
-                indication = null,
-                onClick = onClick
-            )
-            .padding(4.dp)
+        modifier = Modifier.clip(RoundedCornerShape(12.dp)).clickable(interactionSource = remember { MutableInteractionSource() }, indication = null, onClick = onClick).padding(4.dp)
     ) {
         Box(
-            modifier = Modifier
-                .size(44.dp)
-                .shadow(
-                    elevation = 4.dp,
-                    shape = iconShape,
-                    ambientColor = Color.Black.copy(alpha = 0.3f),
-                    spotColor = Color.Black.copy(alpha = 0.2f)
-                )
-                .clip(iconShape)
-                .background(
-                    brush = Brush.verticalGradient(
-                        colors = listOf(
-                            Color(0x33FFFFFF),
-                            Color(0x1AFFFFFF)
-                        )
-                    )
-                )
-                .border(
-                    width = 0.5.dp,
-                    color = Color(0x33FFFFFF),
-                    shape = iconShape
-                ),
+            modifier = Modifier.size(44.dp).shadow(4.dp, iconShape, ambientColor = Color.Black.copy(0.3f), spotColor = Color.Black.copy(0.2f))
+                .clip(iconShape).background(Brush.verticalGradient(listOf(Color(0x33FFFFFF), Color(0x1AFFFFFF)))).border(0.5.dp, Color(0x33FFFFFF), iconShape),
             contentAlignment = Alignment.Center
         ) {
-            Icon(
-                imageVector = icon,
-                contentDescription = label,
-                tint = Color(0xB3FFFFFF),
-                modifier = Modifier.size(22.dp)
-            )
+            Icon(imageVector = icon, contentDescription = null, tint = Color(0xB3FFFFFF), modifier = Modifier.size(22.dp))
         }
     }
 }
