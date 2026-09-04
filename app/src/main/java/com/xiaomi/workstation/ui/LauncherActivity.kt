@@ -50,6 +50,7 @@ import com.xiaomi.workstation.data.PrefsManager
 import com.xiaomi.workstation.service.WorkstationTileService
 import com.xiaomi.workstation.ui.components.AppGrid
 import com.xiaomi.workstation.ui.components.CalendarWidget
+import com.xiaomi.workstation.ui.components.CategoryTabs
 import com.xiaomi.workstation.ui.components.ClockWidget
 import com.xiaomi.workstation.ui.components.Dock
 import com.xiaomi.workstation.ui.components.SearchBar

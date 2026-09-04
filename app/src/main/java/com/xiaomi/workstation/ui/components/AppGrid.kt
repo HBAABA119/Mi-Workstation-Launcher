@@ -42,6 +42,8 @@ import com.xiaomi.workstation.ui.theme.CategoryMedia
 import com.xiaomi.workstation.ui.theme.CategorySocial
 import com.xiaomi.workstation.ui.theme.CategorySystem
 import com.xiaomi.workstation.ui.theme.CategoryWork
+import com.xiaomi.workstation.ui.theme.GlassWhite12
+import com.xiaomi.workstation.ui.theme.GlassWhite8
 import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
 

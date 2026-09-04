@@ -9,7 +9,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableLongStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -22,13 +22,12 @@ import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
-import java.util.Calendar
 import java.util.Date
 import java.util.Locale
 
 @Composable
 fun ClockWidget(modifier: Modifier = Modifier) {
-    var currentTime by remember { mutableIntStateOf(System.currentTimeMillis()) }
+    var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
 
     LaunchedEffect(Unit) {
         while (true) {
@@ -37,11 +36,9 @@ fun ClockWidget(modifier: Modifier = Modifier) {
         }
     }
 
-    val calendar = remember(currentTime) { Calendar.getInstance().apply { timeInMillis = currentTime } }
     val hour = remember(currentTime) { SimpleDateFormat("HH", Locale.getDefault()).format(Date(currentTime)) }
     val minute = remember(currentTime) { SimpleDateFormat("mm", Locale.getDefault()).format(Date(currentTime)) }
     val dateStr = remember(currentTime) { SimpleDateFormat("EEE, dd MMMM", Locale.getDefault()).format(Date(currentTime)) }
-    val dayOfWeek = remember(currentTime) { SimpleDateFormat("EEEE", Locale.getDefault()).format(Date(currentTime)) }
 
     WidgetCard(modifier = modifier) {
         Column(

@@ -5,7 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.os.Build
-import com.xiaomi.workstation.ui.theme.AppCategory
+import com.xiaomi.workstation.data.AppCategory
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
