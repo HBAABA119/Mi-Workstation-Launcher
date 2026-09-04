@@ -22,20 +22,19 @@ import androidx.compose.ui.unit.sp
 import com.xiaomi.workstation.ui.theme.AccentBlue
 import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
-import dev.chrisbanes.haze.HazeState
 import kotlinx.coroutines.delay
 import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
 @Composable
-fun ClockWidget(modifier: Modifier = Modifier, hazeState: HazeState? = null) {
+fun ClockWidget(modifier: Modifier = Modifier) {
     var currentTime by remember { mutableLongStateOf(System.currentTimeMillis()) }
     LaunchedEffect(Unit) { while (true) { currentTime = System.currentTimeMillis(); delay(1000) } }
     val hour = remember(currentTime) { SimpleDateFormat("HH", Locale.getDefault()).format(Date(currentTime)) }
     val minute = remember(currentTime) { SimpleDateFormat("mm", Locale.getDefault()).format(Date(currentTime)) }
     val dateStr = remember(currentTime) { SimpleDateFormat("EEE, dd MMMM", Locale.getDefault()).format(Date(currentTime)) }
-    WidgetGlass(modifier = modifier, hazeState = hazeState) {
+    WidgetGlass(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp), verticalArrangement = Arrangement.Center, horizontalAlignment = Alignment.CenterHorizontally) {
             Row(verticalAlignment = Alignment.Bottom, horizontalArrangement = Arrangement.Center) {
                 Text(text = hour, fontSize = 48.sp, fontWeight = FontWeight.Thin, color = TextPrimary, letterSpacing = (-2).sp)

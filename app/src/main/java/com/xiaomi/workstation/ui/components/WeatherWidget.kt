@@ -21,11 +21,10 @@ import androidx.compose.ui.unit.sp
 import com.xiaomi.workstation.ui.theme.AccentBlue
 import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
-import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun WeatherWidget(modifier: Modifier = Modifier, hazeState: HazeState? = null) {
-    WidgetGlass(modifier = modifier, hazeState = hazeState) {
+fun WeatherWidget(modifier: Modifier = Modifier) {
+    WidgetGlass(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(imageVector = Icons.Outlined.Cloud, contentDescription = null, tint = AccentBlue, modifier = Modifier.size(24.dp))

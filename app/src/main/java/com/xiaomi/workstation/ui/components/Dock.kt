@@ -32,7 +32,6 @@ import androidx.compose.ui.graphics.asImageBitmap
 import androidx.compose.ui.unit.dp
 import androidx.core.graphics.drawable.toBitmap
 import com.xiaomi.workstation.data.AppInfo
-import dev.chrisbanes.haze.HazeState
 
 @Composable
 fun Dock(
@@ -41,10 +40,9 @@ fun Dock(
     onAppClick: (AppInfo) -> Unit,
     onDrawerClick: () -> Unit,
     onSettingsClick: () -> Unit,
-    modifier: Modifier = Modifier,
-    hazeState: HazeState? = null
+    modifier: Modifier = Modifier
 ) {
-    DockGlass(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp), hazeState = hazeState) {
+    DockGlass(modifier = modifier.fillMaxWidth().padding(horizontal = 16.dp, vertical = 8.dp)) {
         Row(
             modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp, vertical = 10.dp),
             horizontalArrangement = Arrangement.SpaceEvenly,

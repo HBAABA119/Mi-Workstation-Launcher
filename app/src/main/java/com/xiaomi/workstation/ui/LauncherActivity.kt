@@ -29,9 +29,9 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -60,9 +60,6 @@ import com.xiaomi.workstation.ui.components.SearchBar
 import com.xiaomi.workstation.ui.components.WeatherWidget
 import com.xiaomi.workstation.ui.theme.DeepNavy
 import com.xiaomi.workstation.ui.theme.MiWorkstationTheme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -71,9 +68,7 @@ class LauncherActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            try { window.setBackgroundBlurRadius(80) } catch (_: Exception) {}
-        }
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) { try { window.setBackgroundBlurRadius(80) } catch (_: Exception) {} }
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).apply {
             hide(WindowInsetsCompat.Type.systemBars())
@@ -108,7 +103,6 @@ class LauncherActivity : ComponentActivity() {
     @Composable
     private fun LauncherScreen(onOpenDrawer: () -> Unit, onOpenSettings: () -> Unit, onSwitchLauncher: () -> Unit) {
         val context = LocalContext.current
-        val hazeState = rememberHazeState()
         val prefs = remember { PrefsManager.getInstance(context) }
         val allApps = remember { mutableStateListOf<AppInfo>() }
         var searchQuery by remember { mutableStateOf("") }
@@ -122,8 +116,7 @@ class LauncherActivity : ComponentActivity() {
         }
         LaunchedEffect(Unit) {
             val loaded = withContext(Dispatchers.IO) { LauncherState.loadAllApps(context) }
-            allApps.clear()
-            allApps.addAll(loaded)
+            allApps.clear(); allApps.addAll(loaded)
         }
         val wallpaperBitmap = remember {
             try {
@@ -147,28 +140,28 @@ class LauncherActivity : ComponentActivity() {
         val recentApps = remember(allApps.toList(), prefs.recentApps) { prefs.recentApps.mapNotNull { pkg -> allApps.find { it.packageName == pkg } }.take(3) }
         Box(modifier = Modifier.fillMaxSize().background(DeepNavy)) {
             wallpaperBitmap?.let { bitmap ->
-                Image(bitmap = bitmap.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().hazeSource(state = hazeState), alpha = 0.85f)
+                Image(bitmap = bitmap.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize(), alpha = 0.70f)
             }
             Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0x550A1628), Color(0x880A1628), Color(0xAA0A1628)))))
             Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
                 Spacer(modifier = Modifier.height(12.dp))
                 if (screenWidthDp > 500) {
                     Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.Top) {
-                        ClockWidget(modifier = Modifier.weight(1f), hazeState = hazeState)
+                        ClockWidget(modifier = Modifier.weight(1f))
                         Spacer(modifier = Modifier.width(12.dp))
-                        WeatherWidget(modifier = Modifier.weight(1f), hazeState = hazeState)
+                        WeatherWidget(modifier = Modifier.weight(1f))
                         Spacer(modifier = Modifier.width(12.dp))
-                        CalendarWidget(modifier = Modifier.weight(1f), hazeState = hazeState)
+                        CalendarWidget(modifier = Modifier.weight(1f))
                     }
                 } else {
                     Row(modifier = Modifier.fillMaxWidth().padding(horizontal = 16.dp), verticalAlignment = Alignment.Top) {
-                        ClockWidget(modifier = Modifier.weight(1f), hazeState = hazeState)
+                        ClockWidget(modifier = Modifier.weight(1f))
                         Spacer(modifier = Modifier.width(12.dp))
-                        WeatherWidget(modifier = Modifier.weight(1f), hazeState = hazeState)
+                        WeatherWidget(modifier = Modifier.weight(1f))
                     }
                 }
                 Spacer(modifier = Modifier.height(16.dp))
-                SearchBar(modifier = Modifier.padding(horizontal = 16.dp), hazeState = hazeState, onQueryChange = { searchQuery = it })
+                SearchBar(modifier = Modifier.padding(horizontal = 16.dp), onQueryChange = { searchQuery = it })
                 Spacer(modifier = Modifier.height(12.dp))
                 CategoryTabs(selectedCategory = selectedCategory, onCategorySelected = { selectedCategory = it })
                 Spacer(modifier = Modifier.height(8.dp))
@@ -178,15 +171,12 @@ class LauncherActivity : ComponentActivity() {
                     onAppClick = { app -> launchApp(app); prefs.addRecentApp(app.packageName) },
                     onAppMove = { from, to ->
                         if (searchQuery.isEmpty() && selectedCategory == null) {
-                            try {
-                                val item = allApps.removeAt(from)
-                                allApps.add(to, item)
-                            } catch (_: Exception) {}
+                            try { val item = allApps.removeAt(from); allApps.add(to, item) } catch (_: Exception) {}
                         }
                     },
                     modifier = Modifier.weight(1f)
                 )
-                Dock(dockApps = dockApps, recentApps = recentApps, onAppClick = { app -> launchApp(app); prefs.addRecentApp(app.packageName) }, onDrawerClick = onOpenDrawer, onSettingsClick = onOpenSettings, modifier = Modifier, hazeState = hazeState)
+                Dock(dockApps = dockApps, recentApps = recentApps, onAppClick = { app -> launchApp(app); prefs.addRecentApp(app.packageName) }, onDrawerClick = onOpenDrawer, onSettingsClick = onOpenSettings)
                 Spacer(modifier = Modifier.height(16.dp))
             }
         }

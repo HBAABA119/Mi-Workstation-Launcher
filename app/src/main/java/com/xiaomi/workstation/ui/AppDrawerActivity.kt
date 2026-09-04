@@ -21,9 +21,9 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
@@ -43,9 +43,6 @@ import com.xiaomi.workstation.ui.components.CategoryTabs
 import com.xiaomi.workstation.ui.components.SearchBar
 import com.xiaomi.workstation.ui.theme.DeepNavy
 import com.xiaomi.workstation.ui.theme.MiWorkstationTheme
-import dev.chrisbanes.haze.HazeState
-import dev.chrisbanes.haze.hazeSource
-import dev.chrisbanes.haze.rememberHazeState
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 
@@ -72,7 +69,6 @@ class AppDrawerActivity : ComponentActivity() {
 @Composable
 private fun AppDrawerScreen(onAppClick: (AppInfo) -> Unit, onClose: () -> Unit) {
     val context = LocalContext.current
-    val hazeState = rememberHazeState()
     val allApps = remember { mutableStateListOf<AppInfo>() }
     var searchQuery by remember { mutableStateOf("") }
     var selectedCategory by remember { mutableStateOf<AppCategory?>(null) }
@@ -103,26 +99,20 @@ private fun AppDrawerScreen(onAppClick: (AppInfo) -> Unit, onClose: () -> Unit) 
     }
     Box(modifier = Modifier.fillMaxSize().background(DeepNavy)) {
         wallpaperBitmap?.let { bitmap ->
-            Image(bitmap = bitmap.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize().hazeSource(state = hazeState), alpha = 0.85f)
+            Image(bitmap = bitmap.asImageBitmap(), contentDescription = null, contentScale = ContentScale.Crop, modifier = Modifier.fillMaxSize(), alpha = 0.70f)
         }
         Box(modifier = Modifier.fillMaxSize().background(Brush.verticalGradient(listOf(Color(0x660A1628), Color(0xCC0A1628)))))
         Column(modifier = Modifier.fillMaxSize().statusBarsPadding()) {
             Spacer(modifier = Modifier.height(16.dp))
-            SearchBar(modifier = Modifier.padding(horizontal = 16.dp), hazeState = hazeState, onQueryChange = { searchQuery = it })
+            SearchBar(modifier = Modifier.padding(horizontal = 16.dp), onQueryChange = { searchQuery = it })
             Spacer(modifier = Modifier.height(12.dp))
             CategoryTabs(selectedCategory = selectedCategory, onCategorySelected = { selectedCategory = it })
             Spacer(modifier = Modifier.height(8.dp))
-            AppGrid(
-                apps = filteredApps,
-                columns = gridColumns,
-                onAppClick = onAppClick,
-                onAppMove = { from, to ->
-                    if (searchQuery.isEmpty() && selectedCategory == null) {
-                        try { val item = allApps.removeAt(from); allApps.add(to, item) } catch (_: Exception) {}
-                    }
-                },
-                modifier = Modifier.weight(1f)
-            )
+            AppGrid(apps = filteredApps, columns = gridColumns, onAppClick = onAppClick, onAppMove = { from, to ->
+                if (searchQuery.isEmpty() && selectedCategory == null) {
+                    try { val item = allApps.removeAt(from); allApps.add(to, item) } catch (_: Exception) {}
+                }
+            }, modifier = Modifier.weight(1f))
         }
     }
 }

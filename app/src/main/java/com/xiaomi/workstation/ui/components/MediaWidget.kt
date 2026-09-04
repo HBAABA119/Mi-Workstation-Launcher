@@ -37,13 +37,12 @@ import com.xiaomi.workstation.ui.theme.AccentBlue
 import com.xiaomi.workstation.ui.theme.MediaGradientEnd
 import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
-import dev.chrisbanes.haze.HazeState
 
 @Composable
-fun MediaWidget(modifier: Modifier = Modifier, hazeState: HazeState? = null) {
+fun MediaWidget(modifier: Modifier = Modifier) {
     var isPlaying by remember { mutableStateOf(false) }
     var progress by remember { mutableFloatStateOf(0.35f) }
-    WidgetGlass(modifier = modifier, hazeState = hazeState) {
+    WidgetGlass(modifier = modifier) {
         Column(modifier = Modifier.fillMaxWidth().padding(16.dp)) {
             Row(verticalAlignment = Alignment.CenterVertically) {
                 Icon(imageVector = Icons.Filled.MusicNote, contentDescription = null, tint = MediaGradientEnd, modifier = Modifier.size(20.dp))
