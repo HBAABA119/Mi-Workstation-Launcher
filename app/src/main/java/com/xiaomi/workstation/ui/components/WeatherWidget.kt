@@ -20,11 +20,8 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.xiaomi.workstation.ui.theme.AccentBlue
-import com.xiaomi.workstation.ui.theme.LightBlue
 import com.xiaomi.workstation.ui.theme.TextPrimary
 import com.xiaomi.workstation.ui.theme.TextSecondary
-import com.xiaomi.workstation.ui.theme.WeatherGradientEnd
-import com.xiaomi.workstation.ui.theme.WeatherGradientStart
 
 @Composable
 fun WeatherWidget(modifier: Modifier = Modifier) {
@@ -32,8 +29,9 @@ fun WeatherWidget(modifier: Modifier = Modifier) {
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(16.dp)
         ) {
+            // Weather icon and condition
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
@@ -41,12 +39,12 @@ fun WeatherWidget(modifier: Modifier = Modifier) {
                     imageVector = Icons.Outlined.Cloud,
                     contentDescription = "Weather",
                     tint = AccentBlue,
-                    modifier = Modifier.size(28.dp)
+                    modifier = Modifier.size(24.dp)
                 )
                 Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "Cloudy",
-                    fontSize = 14.sp,
+                    fontSize = 12.sp,
                     fontWeight = FontWeight.Normal,
                     color = TextSecondary
                 )
@@ -54,32 +52,40 @@ fun WeatherWidget(modifier: Modifier = Modifier) {
 
             Spacer(modifier = Modifier.height(8.dp))
 
+            // Temperature
             Row(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "24°",
-                    fontSize = 44.sp,
+                    text = "24",
+                    fontSize = 40.sp,
                     fontWeight = FontWeight.Thin,
                     color = TextPrimary,
                     letterSpacing = (-1).sp
                 )
-                Spacer(modifier = Modifier.width(12.dp))
-                Column {
-                    Text(
-                        text = "28° / 20°",
-                        fontSize = 13.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = TextSecondary
-                    )
-                    Text(
-                        text = "Beijing",
-                        fontSize = 12.sp,
-                        fontWeight = FontWeight.Normal,
-                        color = TextSecondary
-                    )
-                }
+                Text(
+                    text = "°",
+                    fontSize = 24.sp,
+                    fontWeight = FontWeight.Thin,
+                    color = TextSecondary
+                )
             }
+
+            Spacer(modifier = Modifier.height(4.dp))
+
+            // High/Low and location
+            Text(
+                text = "28° / 20°",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Normal,
+                color = TextSecondary
+            )
+            Text(
+                text = "Beijing",
+                fontSize = 11.sp,
+                fontWeight = FontWeight.Normal,
+                color = TextSecondary
+            )
         }
     }
 }

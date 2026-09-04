@@ -6,11 +6,14 @@ import android.content.ComponentName
 import android.content.Context
 import android.content.Intent
 import android.content.IntentFilter
+import android.graphics.Bitmap
+import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
 import android.os.Build
 import android.os.Bundle
 import android.provider.Settings
-import android.util.DisplayMetrics
+import android.view.WindowManager
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.compose.foundation.Image
@@ -33,6 +36,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Brush
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.asImageBitmap
@@ -67,7 +71,8 @@ class LauncherActivity : ComponentActivity() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        // Make fullscreen with transparent bars
+        window.addFlags(WindowManager.LayoutParams.FLAG_SHOW_WALLPAPER)
+
         WindowCompat.setDecorFitsSystemWindows(window, false)
         WindowInsetsControllerCompat(window, window.decorView).apply {
             hide(WindowInsetsCompat.Type.systemBars())
@@ -143,14 +148,13 @@ class LauncherActivity : ComponentActivity() {
         var selectedCategory by remember { mutableStateOf<AppCategory?>(null) }
         val prefs = remember { PrefsManager.getInstance(context) }
 
-        // Detect screen size for responsive columns
-        val screenWidthDp = LocalContext.current.resources.displayMetrics.widthPixels /
+        val screenWidthDp = context.resources.displayMetrics.widthPixels /
                 LocalDensity.current.density
         val gridColumns = when {
-            screenWidthDp > 900 -> 8  // Large tablet (Redmi Pad 2 Pro ~12.1")
-            screenWidthDp > 600 -> 6  // Small tablet / large phone
-            screenWidthDp > 400 -> 4  // Regular phone (Galaxy A17 ~6.7")
-            else -> 3                 // Small phone
+            screenWidthDp > 900 -> 8
+            screenWidthDp > 600 -> 6
+            screenWidthDp > 400 -> 4
+            else -> 3
         }
 
         LaunchedEffect(Unit) {
@@ -159,11 +163,12 @@ class LauncherActivity : ComponentActivity() {
             }
         }
 
+        // Load wallpaper properly - convert any drawable to bitmap
         val wallpaperBitmap = remember {
             try {
                 val wallpaperManager = WallpaperManager.getInstance(context)
                 val drawable = wallpaperManager.drawable
-                (drawable as? BitmapDrawable)?.bitmap
+                drawableToBitmap(drawable)
             } catch (e: Exception) {
                 null
             }
@@ -201,37 +206,43 @@ class LauncherActivity : ComponentActivity() {
                 .fillMaxSize()
                 .background(DeepNavy)
         ) {
+            // Wallpaper with blur overlay
             wallpaperBitmap?.let { bitmap ->
                 Image(
                     bitmap = bitmap.asImageBitmap(),
                     contentDescription = null,
                     contentScale = ContentScale.Crop,
-                    modifier = Modifier.fillMaxSize(),
-                    alpha = 0.3f
+                    modifier = Modifier
+                        .fillMaxSize()
+                        .blur(2.dp),
+                    alpha = 0.5f
                 )
             }
 
+            // Dark gradient overlay for readability
             Box(
                 modifier = Modifier
                     .fillMaxSize()
                     .background(
                         Brush.verticalGradient(
                             colors = listOf(
-                                Color(0xCC0D1B2A),
-                                Color(0xE60D1B2A)
+                                Color(0x660A1628),  // 40% navy top
+                                Color(0x990A1628),  // 60% navy middle
+                                Color(0xCC0A1628)   // 80% navy bottom
                             )
                         )
                     )
             )
 
+            // Content
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .statusBarsPadding()
             ) {
-                Spacer(modifier = Modifier.height(8.dp))
+                Spacer(modifier = Modifier.height(12.dp))
 
-                // Widget row - hide on small screens
+                // Widget row
                 if (screenWidthDp > 500) {
                     Row(
                         modifier = Modifier
@@ -245,9 +256,7 @@ class LauncherActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.width(12.dp))
                         CalendarWidget(modifier = Modifier.weight(1f))
                     }
-                    Spacer(modifier = Modifier.height(16.dp))
                 } else {
-                    // On phones, show clock only
                     Row(
                         modifier = Modifier
                             .fillMaxWidth()
@@ -258,9 +267,11 @@ class LauncherActivity : ComponentActivity() {
                         Spacer(modifier = Modifier.width(12.dp))
                         WeatherWidget(modifier = Modifier.weight(1f))
                     }
-                    Spacer(modifier = Modifier.height(12.dp))
                 }
 
+                Spacer(modifier = Modifier.height(16.dp))
+
+                // Search bar
                 SearchBar(
                     modifier = Modifier.padding(horizontal = 16.dp),
                     onQueryChange = { searchQuery = it }
@@ -268,6 +279,7 @@ class LauncherActivity : ComponentActivity() {
 
                 Spacer(modifier = Modifier.height(12.dp))
 
+                // Category tabs
                 CategoryTabs(
                     selectedCategory = selectedCategory,
                     onCategorySelected = { selectedCategory = it }
@@ -275,6 +287,7 @@ class LauncherActivity : ComponentActivity() {
 
                 Spacer(modifier = Modifier.height(8.dp))
 
+                // App grid
                 AppGrid(
                     apps = filteredApps,
                     columns = gridColumns,
@@ -285,6 +298,7 @@ class LauncherActivity : ComponentActivity() {
                     modifier = Modifier.weight(1f)
                 )
 
+                // Dock
                 Dock(
                     dockApps = dockApps,
                     recentApps = recentApps,
@@ -297,6 +311,28 @@ class LauncherActivity : ComponentActivity() {
                 )
 
                 Spacer(modifier = Modifier.height(16.dp))
+            }
+        }
+    }
+
+    private fun drawableToBitmap(drawable: Drawable): Bitmap? {
+        return when (drawable) {
+            is BitmapDrawable -> drawable.bitmap
+            is android.graphics.drawable.ColorDrawable -> {
+                val bitmap = Bitmap.createBitmap(1, 1, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                drawable.setBounds(0, 0, 1, 1)
+                drawable.draw(canvas)
+                bitmap
+            }
+            else -> {
+                val width = drawable.intrinsicWidth.coerceAtLeast(1)
+                val height = drawable.intrinsicHeight.coerceAtLeast(1)
+                val bitmap = Bitmap.createBitmap(width, height, Bitmap.Config.ARGB_8888)
+                val canvas = Canvas(bitmap)
+                drawable.setBounds(0, 0, width, height)
+                drawable.draw(canvas)
+                bitmap
             }
         }
     }
